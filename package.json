@@ -1,0 +1,23 @@
+{
+  "name": "react-reactive-ref",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@pika/react": "^16.13.1",
+    "@pika/react-dom": "^16.13.1",
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/lodash.get": "^4.4.6",
+    "@types/lodash.set": "^4.3.6",
+    "@types/react": "^16.9.51",
+    "@types/react-dom": "^16.9.8",
+    "typescript": "^4.0.3",
+    "vite": "^1.0.0-rc.1",
+    "vite-plugin-react": "^3.0.0"
+  }
+}
