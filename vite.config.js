@@ -7,7 +7,7 @@ const reactPlugin = require("vite-plugin-react");
 const config = {
   jsx: "react",
   plugins: [reactPlugin],
-  base: "/react-reactive-ref/docs/",
+  base: "./",
   outDir: "docs",
 };
 
