@@ -9,6 +9,7 @@ const config = {
   plugins: [reactPlugin],
   base: ".",
   outDir: "docs",
+  assetsDir: "static",
 };
 
 module.exports = config;
