@@ -2,6 +2,8 @@ import React from "react";
 import { FormItem } from "./Form/FormItem";
 import createReactive, { Watch } from "./reactive";
 
+import "./App.css";
+
 const useReactiveRef = createReactive<
   object,
   { validators: (value: string) => boolean | string | void }
@@ -12,11 +14,11 @@ useReactiveRef.use({
   beforeChange: (value, name, data, options) => {
     options?.validators(value);
   },
-  onChange: console.log,
+  // onChange: console.log,
 });
 
-const faker = (register) =>
-  Array(2000)
+const faker = (register, n = 100) =>
+  Array(n | 0)
     .fill(0)
     .map((_, index) => (
       <FormItem
@@ -40,7 +42,14 @@ export default function Demo() {
       <Watch register={register()}>
         {({ watch }) => <pre>{JSON.stringify(watch(), null, 2)}</pre>}
       </Watch>
-      {faker(register)}
+      <FormItem label="表单数量" register={register("count")}>
+        <input />
+      </FormItem>
+      <div className="flex">
+        <Watch register={register()}>
+          {({ watch }) => faker(register, watch("count"))}
+        </Watch>
+      </div>
     </>
   );
 }

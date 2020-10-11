@@ -27,7 +27,7 @@ export function FormItem({
 
   return (
     <div>
-      <span>{label}</span>
+      <p style={{ fontSize: 12 }}>{label}</p>
       {cloneElement(children, { value, onChange })}
     </div>
   );

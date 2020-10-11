@@ -10,6 +10,9 @@ const config = {
   base: ".",
   outDir: "docs",
   assetsDir: "static",
+  optimizeDeps: {
+    include: ["lodash"],
+  },
 };
 
 module.exports = config;
