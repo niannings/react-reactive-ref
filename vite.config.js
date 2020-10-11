@@ -7,9 +7,8 @@ const reactPlugin = require("vite-plugin-react");
 const config = {
   jsx: "react",
   plugins: [reactPlugin],
-  base: "./docs",
+  base: ".",
   outDir: "docs",
-  assetsDir: "",
 };
 
 module.exports = config;
