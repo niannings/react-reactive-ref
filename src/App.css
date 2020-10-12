@@ -1,5 +1,7 @@
 .App {
-  text-align: center;
+  width: 1200px;
+  padding: 24px;
+  margin: auto;
 }
 
 .App-logo {
@@ -48,4 +50,20 @@ button {
 
 .flex > * {
   margin-right: 16px;
+}
+
+.demo-box {
+  position: relative;
+  max-height: 420px;
+  padding-left: 320px;
+  overflow-y: auto;
+  border: 1px solid;
+  z-index: 0;
+}
+
+.demo-box .debug-block {
+  width: 320px;
+  transform: translate(-100%, 100%);
+  max-height: 100%;
+  overflow: auto;
 }

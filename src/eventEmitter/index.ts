@@ -24,7 +24,7 @@ function createEventEmitter() {
     pool[__ON_CHANGE__].handlers.forEach(handler);
     Object.values(pool[__ON_CHANGE__].nameHandlers).forEach(handler);
   };
-  const on = (name: string, eventHandler: Handler, handlerName?: string) => {
+  const on = (name: string | undefined = __ON_CHANGE__, eventHandler: Handler, handlerName?: string) => {
     if (!eventChecker(name)) {
       publish(name);
     }

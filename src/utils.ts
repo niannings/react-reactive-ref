@@ -12,7 +12,7 @@ export const set = (target: any, path: string, value: any) => {
   let prevValue: any;
   let prevKey: string;
 
-  parsePath(path).reduce((prev, key) => {
+  parsePath(path).reduce((prev, key, index) => {
     if (!prevKey) {
       if (prev === null || prev === undefined) {
         target = prev = isIndex(key) ? [] : {};
@@ -24,7 +24,10 @@ export const set = (target: any, path: string, value: any) => {
       return prevValue;
     }
 
-    prev[prevKey] = isIndex(key) ? [] : {};
+    if (!prev[prevKey]) {
+      prev[prevKey] = isIndex(key) ? [] : {};
+    }
+
     prevValue = prev[prevKey];
     prevKey = key;
 

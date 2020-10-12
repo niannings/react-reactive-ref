@@ -1,18 +1,20 @@
 import React, { ReactElement, useState, cloneElement } from "react";
-import createReactive from "../reactive";
+import useForm from "./index";
 
 interface IFormItemProps {
   children: ReactElement;
   register: ReturnType<
-    ReturnType<ReturnType<typeof createReactive>>["register"]
+    ReturnType<typeof useForm>["register"]
   >;
-  label: string;
+  label?: string;
+  $parser?: (viewValue: any, setViewValue: (value: any) => any) => any;
 }
 
 export function FormItem({
   children,
-  register: { name, emit },
+  register: { name, emit, customGetter },
   label,
+  $parser
 }: IFormItemProps) {
   const [value, setValue] = useState();
 
@@ -21,14 +23,21 @@ export function FormItem({
       v = v.target?.value;
     }
 
+    let modelValue = v
+
+    if ($parser) {
+      modelValue = $parser(v, (_v) => v = _v)
+    }
+
     setValue(v);
-    emit(name!, v);
+    emit(name!, modelValue);
   };
 
   return (
     <div>
       <p style={{ fontSize: 12 }}>{label}</p>
       {cloneElement(children, { value, onChange })}
+      <p style={{ color: 'red' }}>{customGetter(`errors.${name}`)}</p>
     </div>
   );
 }
