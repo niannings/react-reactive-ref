@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Watch } from '../../reactive';
 import { FormItem } from '../FormItem';
 import useForm from '../index';
@@ -12,6 +12,7 @@ const faker = (register: ReturnType<typeof useForm>['register'], n = 100) =>
                 label="她说"
                 register={register(`faker[${index}]`)}
                 $parser={(v) => `是的，仙女说：${v}`}
+                defalueValue="太傻了"
                 $formatter={(value, setModalValue) => {
                     setModalValue(`仙女好像说：${value}`);
 
@@ -23,30 +24,7 @@ const faker = (register: ReturnType<typeof useForm>['register'], n = 100) =>
         ));
 
 export default function DemoNormal() {
-    const { register, setValue } = useForm();
-
-    useEffect(() => {
-        setTimeout(() => {
-            setValue('faker', [
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                '太傻了',
-                undefined,
-                100,
-                250,
-            ]);
-        }, 1000);
-    }, []);
+    const { register } = useForm();
 
     console.log('父组件更新～');
 

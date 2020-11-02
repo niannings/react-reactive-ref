@@ -130,6 +130,10 @@ function createReactive<
                 emit: emitter.emit,
                 dataGetter,
                 customGetter: custom.getter,
+                unbind: (name) => {
+                    emitter.unpublish(name);
+                    set(dataRef, name, undefined);
+                },
             };
         };
         const register = (name?: string, options?: RegisterOptions) =>

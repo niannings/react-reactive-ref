@@ -45,10 +45,13 @@ function createEventEmitter() {
             pool[name].handlers.push(eventHandler);
         }
     };
+    const unpublish = (name: string) => {
+        delete pool[name];
+    };
 
     publish(__ON_CHANGE__);
 
-    return { publish, emit, on };
+    return { publish, emit, on, unpublish };
 }
 
 createEventEmitter.__ON_CHANGE__ = __ON_CHANGE__;

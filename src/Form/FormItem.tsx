@@ -15,6 +15,7 @@ interface IFormItemProps {
     label?: string;
     $parser?: (viewValue: any, setViewValue: (value: any) => any) => any;
     $formatter?: (modalValue: any, setModalValue: (value: any) => any) => any;
+    defalueValue?: any;
 }
 
 export function FormItem({
@@ -24,9 +25,10 @@ export function FormItem({
     $parser,
     $formatter,
     onFiledChange,
+    defalueValue,
 }: IFormItemProps) {
-    const { name, emit, on } = register;
-    const [value, setValue] = useState();
+    const { name, emit, on, unbind } = register;
+    const [value, setValue] = useState(defalueValue);
     const statusRef = useRef<{ setting: boolean }>({ setting: false });
 
     const onChange = (v) => {
@@ -48,26 +50,36 @@ export function FormItem({
         statusRef.current.setting = false;
     };
 
-    useEffect(() => {
-        on(name, (value) => {
-            if (!statusRef.current.setting) {
-                let modelValue = value;
-                let viewValue = value;
+    const setOuterValue = (value) => {
+        if (!statusRef.current.setting) {
+            let modelValue = value;
+            let viewValue = value;
 
-                if ($formatter) {
-                    viewValue = $formatter(
-                        value,
-                        (_value) => (modelValue = _value)
-                    );
-                }
-                setValue(viewValue);
-                setTimeout(() => {
-                    statusRef.current.setting = true;
-                    emit(name, modelValue);
-                    statusRef.current.setting = false;
-                });
+            if ($formatter) {
+                viewValue = $formatter(
+                    value,
+                    (_value) => (modelValue = _value)
+                );
             }
-        });
+            setValue(viewValue);
+            setTimeout(() => {
+                statusRef.current.setting = true;
+                emit(name, modelValue);
+                statusRef.current.setting = false;
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (defalueValue) {
+            setOuterValue(defalueValue);
+        }
+
+        on(name, setOuterValue);
+
+        return () => {
+            unbind(name);
+        };
     }, []);
 
     return (
