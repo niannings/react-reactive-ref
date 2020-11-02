@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Watch } from "../../reactive";
 import { FormItem } from "../FormItem";
 import useForm from "../index";
 
 export default function DemoValidate() {
-    const { register, customGetter } = useForm();
+    const { register, batchDirty, errors, setValue } = useForm<{
+        required: number;
+    }>();
 
-    console.log(customGetter("errors"));
+    const reset = () => {
+        batchDirty(false);
+    };
+
+    const submit = () => {
+        batchDirty(true);
+    };
 
     return (
         <>
@@ -21,13 +29,7 @@ export default function DemoValidate() {
                     {({ watch }) => (
                         <>
                             <pre>{JSON.stringify(watch(), null, 2)}</pre>
-                            <pre>
-                                {JSON.stringify(
-                                    customGetter("errors"),
-                                    null,
-                                    2
-                                )}
-                            </pre>
+                            <pre>{JSON.stringify(errors, null, 2)}</pre>
                         </>
                     )}
                 </Watch>
@@ -45,7 +47,7 @@ export default function DemoValidate() {
                     <input />
                 </FormItem>
                 <FormItem
-                    label="正则校验"
+                    label="请输入数字"
                     register={register("pattern", {
                         pattern: /^[\d]*$/,
                         $validMessages: {
@@ -56,7 +58,7 @@ export default function DemoValidate() {
                     <input />
                 </FormItem>
                 <FormItem
-                    label="最大长度校验"
+                    label="最多 10 位"
                     register={register("maxLength", {
                         maxLength: 10,
                         $validMessages: {
@@ -67,7 +69,7 @@ export default function DemoValidate() {
                     <input />
                 </FormItem>
                 <FormItem
-                    label="最小长度校验"
+                    label="至少 2 位"
                     register={register("minLength", {
                         minLength: 2,
                         $validMessages: {
@@ -99,45 +101,68 @@ export default function DemoValidate() {
                 </FormItem>
                 <div style={{ width: "100%" }}>
                     <h5>三个加起来需要等于100%</h5>
-                    <Watch register={register()}>
+                    {/* <Watch register={register()}>
+                        {({ watch }) => (
+                            <FormItem
+                                label="依赖校验-1"
+                                register={register("a", {
+                                    $validators:
+                                })}
+                            >
+                                <input />
+                            </FormItem>
+                        )}
+                    </Watch>
+                    <FormItem label="依赖校验-2" register={register("b")}>
+                        <input />
+                    </FormItem>
+                    <FormItem label="依赖校验-3" register={register("c")}>
+                        <input />
+                    </FormItem> */}
+                    {/* <Watch register={register()}>
                         {({ watch }) => {
+                            const batchError = () => {
+                                const msg = "三个加起来需要等于100%";
+                                setErrors("a", msg);
+                                setErrors("b", msg);
+                                setErrors("c", msg);
+                            };
                             const validator = () =>
-                                (watch("a") | 0) + (watch("b") | 0) + (watch("c") | 0) === 100 ||
-                                "三个加起来需要等于100%";
-
-                                console.log((watch("a") | 0) + (watch("b") | 0) + (watch("c") | 0))
+                                (watch("a") | 0) +
+                                    (watch("b") | 0) +
+                                    (watch("c") | 0) ===
+                                    100 || batchError();
 
                             return (
                                 <div className="flex">
                                     <FormItem
                                         label="依赖校验-1"
-                                        register={register("a", {
-                                            $validators: [validator],
-                                        })}
+                                        onFiledChange={validator}
+                                        register={register("a")}
                                     >
                                         <input />
                                     </FormItem>
                                     <FormItem
                                         label="依赖校验-2"
-                                        register={register("b", {
-                                            $validators: [validator],
-                                        })}
+                                        onFiledChange={validator}
+                                        register={register("b")}
                                     >
                                         <input />
                                     </FormItem>
                                     <FormItem
                                         label="依赖校验-3"
-                                        register={register("c", {
-                                            $validators: [validator],
-                                        })}
+                                        onFiledChange={validator}
+                                        register={register("c")}
                                     >
                                         <input />
                                     </FormItem>
                                 </div>
                             );
                         }}
-                    </Watch>
+                    </Watch> */}
                 </div>
+                <button onClick={reset}>重置</button>
+                <button onClick={submit}>提交</button>
             </div>
         </>
     );

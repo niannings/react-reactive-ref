@@ -54,7 +54,6 @@ button {
 
 .demo-box {
   position: relative;
-  max-height: 420px;
   padding-left: 320px;
   overflow-y: auto;
   border: 1px solid;
@@ -62,8 +61,14 @@ button {
 }
 
 .demo-box .debug-block {
+  position: absolute;
+  top: 0;
   width: 320px;
-  transform: translate(-100%, 100%);
+  transform: translate(-100%);
   max-height: 100%;
   overflow: auto;
+}
+
+.active {
+  color: red;
 }

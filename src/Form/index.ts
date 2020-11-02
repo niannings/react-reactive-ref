@@ -1,4 +1,5 @@
 import createReactive from "../reactive";
+import { PluginValidate } from "./Plugin/validate";
 
 interface IFormItemOptions {
     required?: boolean;
@@ -11,71 +12,43 @@ interface IFormItemOptions {
     $validators?: Array<(value: any) => boolean | string | void>;
 }
 
-const useForm = createReactive<
-    {
-        errors: Record<string, string>;
-    },
-    IFormItemOptions
->(() => ({ errors: {} }));
+const useFormReactive = createReactive<IFormItemOptions>();
+
+export type FormPlugin = Parameters<typeof useFormReactive.use>[0];
 
 // 校验插件
-useForm.use(
-    {
-        registerd: ({ custom, name }) => {
-            custom?.bind(`errors.${name}`)
-        }
-    },
-    {
-        beforeChange: ({ value, name, custom, options = {} }) => {
-            const onError = (msg?: string) => {
-                custom.emit(`errors.${name}`, msg);
-            }
-            if (options.required) {
-                if (!value) {
-                    return onError(
-                        options?.$validMessages?.required || "请输入"
-                    );
+useFormReactive.use(PluginValidate);
+
+export default function useForm<Data extends object = object>(
+    initialData?: Data
+) {
+    interface Formutils {
+        errors: {};
+        setValue: (path: any, value: any) => void;
+        setError: (name: any, value: any) => void;
+        batchDirty: (dirty: any) => void;
+    }
+
+    const formutils = useFormReactive<Data, Formutils>(initialData, (emit) => {
+        const utils = {
+            errors: {},
+            setValue: (path, value) => {
+                if (path) {
+                    emit(path, value);
                 }
-            }
-
-            if (options.pattern) {
-                if (!options.pattern.test(value)) {
-                    return onError(
-                        options?.$validMessages?.pattern || "pattern invalid"
-                    );
+            },
+            setError: (name, value) => {
+                if (name) {
+                    emit(`errors.${name}`, value);
                 }
-            }
+            },
+            batchDirty: (dirty) => {
+                dirty ? emit("batchDirty") : emit("clearDirty");
+            },
+        };
 
-            if (options.maxLength !== undefined) {
-                if (value?.length > options.maxLength) {
-                    return onError(
-                        options.$validMessages?.maxLength ||
-                            name + " more than maxLength: " + options.maxLength
-                    );
-                }
-            }
+        return utils;
+    });
 
-            if (options.minLength !== undefined) {
-                if (value?.length < options.minLength) {
-                    return onError(
-                        options.$validMessages?.minLength ||
-                            name + " less than minLength: " + options.maxLength
-                    );
-                }
-            }
-
-            if (options.$validators?.length) {
-                for (let validator of options.$validators) {
-                    const msg = validator(value);
-                    if (msg !== true) {
-                        return onError(msg as string)
-                    }
-                }
-            }
-
-            onError();
-        },
-    },
-);
-
-export default useForm;
+    return formutils;
+}
